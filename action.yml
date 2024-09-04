@@ -14,7 +14,7 @@ inputs:
   depth:
     description: Checkout depth
     required: false
-    default: 500
+    default: 2
 
   auto:
     description: Automatic handling
@@ -32,12 +32,12 @@ runs:
 
   steps:
     - if: inputs.auto != ''
-      uses: li1ht2ay-3es/gi1-ac2io3s@user-action
+      uses: fu1ny2t-3es/gi1-ac2io3s@user-action
 
 
 
     - if: inputs.auto != ''
-      uses: li1ht2ay-3es/gi1-ac2io3s@checkout-repo
+      uses: fu1ny2t-3es/gi1-ac2io3s@checkout-repo
       with:
         token: ${{ inputs.token }}
 
@@ -47,6 +47,7 @@ runs:
       run: |
         git remote add remote https://github.com/${{ inputs.remote_repo }}.git
         git fetch --depth=${{ inputs.depth }} remote ${{ inputs.remote_branch }}
+        git fetch --unshallow remote ${{ inputs.remote_branch }}
 
 
 
