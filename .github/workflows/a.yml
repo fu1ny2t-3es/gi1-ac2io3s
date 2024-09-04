@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: li1ht2ay-3es/gi1-ac2io3s@squash-branch
+      - uses: fu1ny2t-3es/gi1-ac2io3s@squash-branch
         with:
           depth: ${{ inputs.depth }}
 
