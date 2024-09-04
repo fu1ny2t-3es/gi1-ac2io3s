@@ -32,12 +32,12 @@ runs:
 
   steps:
     - if: inputs.auto != ''
-      uses: li1ht2ay-3es/gi1-ac2io3s@user-action
+      uses: fu1ny2t-3es/gi1-ac2io3s@user-action
 
 
 
     - if: inputs.auto != ''
-      uses: li1ht2ay-3es/gi1-ac2io3s@checkout-repo
+      uses: fu1ny2t-3es/gi1-ac2io3s@checkout-repo
       with:
         token: ${{ inputs.token }}
 
