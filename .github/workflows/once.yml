@@ -1,9 +1,13 @@
+# Copy script to target branch directly
+
 on:
-  # push:
+#  push:
 
 
 env:
   squash: 1
+  erase: 0
+  author: 
 
 
 jobs:
@@ -12,20 +16,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@main
+      - uses: fu1ny2t-3es/gi1-ac2io3s@user-action
+
+
+      - uses: fu1ny2t-3es/gi1-ac2io3s@checkout-branch
         with:
-          fetch-depth: ${{ env.squash }}+2
-          # ref: my-branch
+          token: ${{ secrets.token }}
+          depth: 999999999
 
 
       - run: |
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
+
           git reset --hard HEAD~1
+          git reset --hard HEAD~${{ env.erase }}
+          git log -1
 
           git reset --soft HEAD~${{ env.squash }}
-          git commit --amend --no-edit
+
+
+          if [[ -z "${{ env.author }}" ]]; then
+            git commit --amend --no-edit
+          else
+            git commit --amend --author="${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>" --no-edit
+          fi
+
 
           git push -f origin
 
