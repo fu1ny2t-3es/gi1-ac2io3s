@@ -19,25 +19,24 @@ runs:
   steps:
     - if: runner.os == 'Windows'
       working-directory: ${{ github.action_path }}
-
       shell: pwsh
       run: |
-        if ('${{ inputs.os }}' -ne 'winxp') {
-          curl -L -o "mingw_version.txt" "https://github.com/brechtsanders/winlibs_mingw/releases/latest"
-
-          $compiler_file = ( `
-            (Get-Content "mingw_version.txt" -Raw) `
-             -Split "/brechtsanders/winlibs_mingw/releases/download/(.+).7z`" rel=" `
-          )[1]
+        if ('${{ inputs.os }}' -eq 'winxp') {
+          $compiler_file = "11.1.0-12.0.0-8.0.2-r1/winlibs-i686-posix-dwarf-gcc-11.1.0-mingw-w64-8.0.2-r1"
         }
         else {
-          $compiler_file = "11.1.0-12.0.0-8.0.2-r1/winlibs-i686-posix-dwarf-gcc-11.1.0-mingw-w64-8.0.2-r1"
+          curl --no-progress-meter -L -o "mingw_version.txt" "https://api.github.com/repos/brechtsanders/winlibs_mingw/releases/latest"
 
-          # https://github.com/brechtsanders/winlibs_mingw/releases/download/11.1.0-12.0.0-8.0.2-r1/winlibs-i686-posix-dwarf-gcc-11.1.0-llvm-12.0.0-mingw-w64-8.0.2-r1.7z
+          $url = ( `
+              (Get-Content "mingw_version.txt" -Raw) `
+              -Split '"browser_download_url": '
+          )[1]
+
+          $compiler_file = ($url -Split '"')[1]
         }
 
 
-        if ('${{ inputs.arch }}' -eq 'x64') {
+        if ('${{ inputs.arch }}' -eq 'x64' ) {
           $compiler_file = $compiler_file.replace("i686-posix-dwarf", "x86_64-posix-seh")
           $compiler_path = "mingw64"
         }
@@ -46,10 +45,7 @@ runs:
         }
 
 
-        echo $("`nCompiler: " + "$compiler_file")
-
-        curl.exe -L -o "mingw.7z" `
-               ("https://github.com/brechtsanders/winlibs_mingw/releases/download/" + "$compiler_file" + ".7z")
+        curl.exe --no-progress-meter -L -o "mingw.7z" $compiler_file
         7z x "mingw.7z" | Out-Null
 
         cd $compiler_path
@@ -68,6 +64,10 @@ runs:
         ##  echo "MAKE=mingw32-make" >> $env:GITHUB_ENV
 
 
+        echo $(gcc --version)
+
+
+
 
     - if: runner.os == 'Linux'
       shell: bash
@@ -78,22 +78,26 @@ runs:
             binutils-mingw-w64-i686 \
             g++-mingw-w64-i686 \
             gcc-mingw-w64-i686 \
-            mingw-w64-i686-dev
+            mingw-w64-i686-dev \
+            mingw-w64-tools
 
           GCC_t="i686-w64-mingw32-gcc-posix"
           GXX_t="i686-w64-mingw32-g++-posix"
           WINDRES_t="i686-w64-mingw32-windres"
+          PKG_CONF_PATH_t="i686-w64-mingw32-pkg-config"
 
         else
           sudo apt-get install \
             binutils-mingw-w64-x86-64 \
             g++-mingw-w64-x86-64 \
             gcc-mingw-w64-x86-64 \
-            mingw-w64-x86-64-dev
+            mingw-w64-x86-64-dev \
+            mingw-w64-tools
 
           GCC_t="x86_64-w64-mingw32-gcc-posix"
           GXX_t="x86_64-w64-mingw32-g++-posix"
           WINDRES_t="x86_64-w64-mingw32-windres"
+          PKG_CONF_PATH_t="x86_64-w64-mingw32-pkg-config"
         fi
 
 
@@ -106,8 +110,10 @@ runs:
         echo "MINGW_CC=$GCC_t"
         echo "MINGW_CXX=$GXX_t"
         echo "MINGW_WINDRES=$WINDRES_t"
+        echo "MINGW_PKG_CONF_PATH_t=$PKG_CONF_PATH_t"
 
 
         echo "MINGW_CC=$GCC_t" >> $GITHUB_ENV
         echo "MINGW_CXX=$GXX_t" >> $GITHUB_ENV
         echo "MINGW_WINDRES=$WINDRES_t" >> $GITHUB_ENV
+        echo "MINGW_PKG_CONF_PATH=$PKG_CONF_PATH_t" >> $GITHUB_ENV
