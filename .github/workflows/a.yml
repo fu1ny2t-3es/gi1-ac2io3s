@@ -13,15 +13,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: li1ht2ay-3es/gi1-ac2io3s@user-action
+      - uses: fu1ny2t-3es/gi1-ac2io3s@user-action
 
 
-      - uses: li1ht2ay-3es/gi1-ac2io3s@checkout-branch
+      - uses: fu1ny2t-3es/gi1-ac2io3s@checkout-branch
         with:
           token: "${{ env.token }}"
 
 
-      - uses: li1ht2ay-3es/gi1-ac2io3s@erase-commit
+      - uses: fu1ny2t-3es/gi1-ac2io3s@erase-commit
         with:
           depth: 1
 
