@@ -1,0 +1,34 @@
+on:
+  push:
+  workflow_dispatch:
+
+
+jobs:
+
+  build-libretro:
+    strategy:
+      matrix:
+        arch: [rk]
+      fail-fast: false
+
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - shell: bash
+      run: |
+        git clone -b main https://github.com/core
+        cd core
+        ls -a
+
+        sudo apt install gcc-aarch64-linux-gnu
+        export CC=aarch64-linux-gnu-gcc
+        make -f Makefile.libretro -j`nproc`
+        ls -a
+
+
+    - uses: actions/upload-artifact@main
+      with:
+        name: core-rk
+        path: ${{ github.workspace }}/core/**.so

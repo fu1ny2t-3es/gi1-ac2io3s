@@ -1,0 +1,44 @@
+on:
+  push:
+  workflow_dispatch:
+
+
+jobs:
+
+  build-libretro:
+    strategy:
+      matrix:
+        arch: [3ds]
+      fail-fast: false
+
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - shell: bash
+      run: |
+        git clone -b main https://github.com/repo core
+        cd core
+        ls -a
+
+        docker run --rm -v "$PWD:/build" --network=host devkitpro/devkitarm sh -c "cd /build; make -f Makefile.libretro -j`nproc` platform=ctr USE_CTRULIB_2=1"
+
+
+
+    - shell: bash
+      run: |
+        git clone https://github.com/libretro/RetroArch.git retroarch
+        cd retroarch
+
+        docker run --rm -v "$PWD:/build" --network=host devkitpro/devkitarm sh -c "cd /build; make -f Makefile.ctr.salamander USE_CTRULIB_2=1"
+
+        mv ../core/genesis_plus_gx_libretro_ctr.a libretro_ctr.a
+        docker run --rm -v "$PWD:/build" --network=host devkitpro/devkitarm sh -c "cd /build; make -f Makefile.ctr USE_CTRULIB_2=1"
+
+
+
+    - uses: actions/upload-artifact@main
+      with:
+        name: core-ctr
+        path: ${{ github.workspace }}/retroarch/**.cia
