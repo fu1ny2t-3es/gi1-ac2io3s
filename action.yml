@@ -51,14 +51,14 @@ runs:
         cd $compiler_path
 
 
-        $env:PATH = $pwd.path + ";" + $env:GITHUB_PATH
-        $env:PATH = $pwd.path + "/bin;" + $env:GITHUB_PATH
+        $env:PATH = $pwd + ";" + $env:GITHUB_PATH
+        $env:PATH = $pwd + "/bin;" + $env:GITHUB_PATH
 
         echo $env:PATH | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
 
         $env:MINGW_CC = "gcc"
         $env:MINGW_CXX = "g++"
-        $env:MINGW_PATH = $pwd.path
+        $env:MINGW_PATH = $pwd
 
         echo "MINGW_CC=gcc" >> $env:GITHUB_ENV
         echo "MINGW_CXX=g++" >> $env:GITHUB_ENV
