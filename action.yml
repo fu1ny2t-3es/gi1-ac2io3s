@@ -62,7 +62,7 @@ runs:
 
         echo "MINGW_CC=gcc" >> $env:GITHUB_ENV
         echo "MINGW_CXX=g++" >> $env:GITHUB_ENV
-        echo "MINGW_PATH=$pwd.path" >> $env:GITHUB_ENV
+        echo "MINGW_PATH=$pwd" >> $env:GITHUB_ENV
         ##  echo "MAKE=mingw32-make" >> $env:GITHUB_ENV
 
 
