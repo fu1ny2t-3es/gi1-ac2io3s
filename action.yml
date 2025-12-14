@@ -51,8 +51,8 @@ runs:
         cd $compiler_path
 
 
-        $env:PATH = $pwd + ";" + $env:GITHUB_PATH
-        $env:PATH = $pwd + "/bin;" + $env:GITHUB_PATH
+        $env:PATH = $pwd.path + ";" + $env:GITHUB_PATH
+        $env:PATH = $pwd.path + "/bin;" + $env:GITHUB_PATH
 
         echo $env:PATH | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
 
